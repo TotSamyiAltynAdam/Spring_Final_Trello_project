@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xlmns:th="http://www.thymeleaf.org" xmlns:xlmns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main_layout.html">
+
+    <div layout:fragment="siteContent">
+        <div class="row mt-3"  style="margin: 17px 0 13px">
+            <div class="col-12">
+              <a data-bs-toggle="modal" data-bs-target="#addCategory" style="text-decoration: none; color: black;font-weight: bold;cursor: pointer;">+New Category</a>
+            </div>
+        </div>
+        <div class="row mt-1">
+            <div class="col-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr style="border-bottom: 3px solid black;">
+                          <th style="width: 10%;">ID</th>
+                          <th>Task Category Name</th>
+                          <th style="width: 10%;">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="category : ${categories}">
+                          <td th:text="${category.getId()}"></td>
+                          <td th:text="${category.getName()}"></td>
+                          <td>
+                            <a th:href="@{'/detailedCategory/' + ${category.getId()}}" class="btn btn-primary btn-sm">Details</a>
+                          </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addCategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form th:action="@{'/save-category'}" method="post">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">ADD TASK CATEGORY</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="name">TASK CATEGORY NAME: </label>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <input type="text" class="form-control" name="name" id="name" placeholder="Task Category Name" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                            <button class="btn btn-success">ADD</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</html>

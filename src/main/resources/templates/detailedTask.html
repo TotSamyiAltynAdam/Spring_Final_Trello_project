@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xlmns:th="http://www.thymeleaf.org" xmlns:xlmns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main_layout.html">
+
+    <div layout:fragment="siteContent">
+        <div class="row">
+            <div class="col-5 mx-auto">
+                <form th:action="@{'/save-task'}" method="post" th:if="${task!=null}">
+                    <input type="hidden" th:value="${task.getId()}" name="id">
+                    <input type="hidden" th:value="${task.getFolder().getId()}" name="folder">
+                    <div class="row">
+                        <div class="col-12">
+                          <label for="title">TITLE: </label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                          <input type="text" class="form-control" name="title" id="title" placeholder="Title" th:value="${task.getTitle()}" required>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                          <label for="description">DESCRIPTION: </label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                          <input type="text" class="form-control" name="description" id="description" placeholder="Description" th:value="${task.getDescription()}" required>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <label for="status">Status: </label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <select class="form-select" aria-label="Default select example" name="status" id="status" required>
+                                <option value="0" th:selected="${task.getStatus()==0}">To do</option>
+                                <option value="1" th:selected="${task.getStatus()==1}">In test</option>
+                                <option value="2" th:selected="${task.getStatus()==2}">Done</option>
+                                <option value="3" th:selected="${task.getStatus()==3}">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <a th:href="@{'/task/' + ${task.getFolder().getId()}}" class="btn btn-secondary">Close</a>
+                            <button th:if="${task.getStatus()!=2 && task.getStatus()!=3}" class="btn btn-success ms-2">Save Task</button>
+                            <button th:if="${task.getStatus()!=2 && task.getStatus()!=3}" type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteTask">Delete</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal fade" id="deleteTask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form th:action="@{'/delete-task'}" method="post">
+                            <input type="hidden" th:value="${task.getId()}" name="id">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you sure?</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    If you delete then you can't return
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn-danger">Understood</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 50px;">
+                    <div class="col-12">
+                        <a data-bs-toggle="modal" data-bs-target="#addComment"
+                           style="text-decoration: none; color: orange;
+                            font-weight: bold;cursor: pointer; padding: 7px;
+                            border: 1px solid orange; border-radius: 3px">
+                                +Add Comment
+                        </a>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 30px;">
+                    <div class="col-12">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr style="border-bottom: 3px solid black;">
+                                    <th style="width: 10%;">ID</th>
+                                    <th>Commentary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="comment : ${commentaries}">
+                                    <td th:text="${comment.getId()}"></td>
+                                    <td th:text="${comment.getComment()}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal fade" id="addComment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addCommentLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form th:action="@{'/add-comment'}" method="post">
+                            <div class="modal-content">
+                                <input type="hidden" th:value="${task.getId()}" name="taskId">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="addCommentLabel" th:inline="text">
+                                        Add comment for - <span th:text="${task.getTitle()}" style="color: green;"></span> task<br>
+                                        located in <span th:text="${task.getFolder().getName()}" style="color: red;"></span>
+                                    </h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <label for="commentary">Commentary: </label>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <textarea class="form-control" name="commentary" id="commentary" rows="6" placeholder="Commentary" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                                    <button class="btn btn-success">ADD</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <h4 th:if="${task==null}" class="text-center">
+                    Task not found
+                </h4>
+            </div>
+        </div>
+    </div>
+</html>

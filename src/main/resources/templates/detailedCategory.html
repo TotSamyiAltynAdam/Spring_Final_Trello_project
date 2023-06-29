@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xlmns:th="http://www.thymeleaf.org" xmlns:xlmns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main_layout.html">
+
+    <div layout:fragment="siteContent">
+        <div class="row">
+            <div class="col-5 mx-auto">
+                <form th:action="@{'/save-category'}" method="post" th:if="${category!=null}">
+                    <input type="hidden" th:value="${category.getId()}" name="id">
+                    <div class="row">
+                        <div class="col-12">
+                          <label for="name">Name: </label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                          <input type="text" class="form-control" name="name" id="name" placeholder="Name" th:value="${category.getName()}" required>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <a th:href="@{'/categories'}" class="btn btn-secondary">Close</a>
+                            <button class="btn btn-success ms-2">Save Task</button>
+                            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteCategory">Delete</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal fade" id="deleteCategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form th:action="@{'/delete-category'}" method="post">
+                            <input type="hidden" th:value="${category.getId()}" name="id">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you sure?</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    If you delete then you can't return
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn-danger">Understood</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <h4 th:if="${category==null}" class="text-center">
+                    Category not found
+                </h4>
+            </div>
+        </div>
+    </div>
+</html>
